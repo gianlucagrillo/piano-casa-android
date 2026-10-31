@@ -11,7 +11,7 @@ import android.app.Notification
 import java.util.Calendar
 
 /**
- * Notifiche all'attivazione dei blocchi: ogni giorno alle 18:00 (sera) e nel weekend alle 10:00 (faccende).
+ * Notifiche all'attivazione dei blocchi: ogni giorno alle 7:00 (mattina) e alle 18:00 (sera), nel weekend anche alle 10:00 (faccende).
  * Gli orari sono gli stessi della pagina (EVENING_HOUR = 18, weekend 10).
  */
 object BlockScheduler {
@@ -24,6 +24,7 @@ object BlockScheduler {
             val day = (now.clone() as Calendar).apply { add(Calendar.DAY_OF_YEAR, d) }
             val wd = day.get(Calendar.DAY_OF_WEEK)
             val weekend = wd == Calendar.SATURDAY || wd == Calendar.SUNDAY
+            out += at(day, 7) to "morning"
             if (weekend) out += at(day, 10) to "weekend"
             out += at(day, 18) to "evening"
         }
@@ -49,6 +50,7 @@ object BlockScheduler {
             description = "When a new block of tasks becomes available"
         })
         val (title, text) = when (kind) {
+            "morning" -> "Good morning" to "Your morning tasks are ready."
             "weekend" -> "Weekend chores are ready" to "Open your plan and start with the first card."
             else -> "Evening tasks are ready" to "Open your plan and start with the first card."
         }
