@@ -3,6 +3,8 @@ package it.gianlucagrillo.pianocasa
 import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
+import android.content.Intent
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.os.VibrationEffect
@@ -41,8 +43,21 @@ class MainActivity : Activity() {
         web.addJavascriptInterface(Haptics(this), "AndroidHaptics")
         setContentView(web)
 
-        if (savedInstanceState != null) web.restoreState(savedInstanceState)
-        else web.loadUrl(URL)
+        if (savedInstanceState != null && intent?.data == null) web.restoreState(savedInstanceState)
+        else web.loadUrl(urlFor(intent))
+    }
+
+    override fun onNewIntent(intent: Intent) {
+        super.onNewIntent(intent)
+        setIntent(intent)
+        if (intent.data != null) web.loadUrl(urlFor(intent))
+    }
+
+    /** pianocasa://connect#TOKEN passa il codice di accesso alla pagina. */
+    private fun urlFor(i: Intent?): String {
+        val d = i?.data
+        val token = if (d?.scheme == "pianocasa") d.fragment else null
+        return if (token.isNullOrEmpty()) URL else URL + "#connect=" + Uri.encode(token)
     }
 
     override fun onWindowFocusChanged(hasFocus: Boolean) {
