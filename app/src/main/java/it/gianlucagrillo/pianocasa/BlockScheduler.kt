@@ -48,10 +48,10 @@ object BlockScheduler {
         nm.createNotificationChannel(NotificationChannel(CHANNEL, "Task blocks", NotificationManager.IMPORTANCE_DEFAULT).apply {
             description = "When a new block of tasks becomes available"
         })
-        val (title, text) = when (kind) {
-            "morning" -> "Good morning" to "Your morning tasks are ready."
-            "weekend" -> "Weekend chores are ready" to "Open your plan and start with the first card."
-            else -> "Evening tasks are ready" to "Open your plan and start with the first card."
+        val (title, text): Pair<String, String?> = when (kind) {
+            "morning" -> "Good morning" to "It's time to wake up"
+            "weekend" -> "Weekend chores are here" to null
+            else -> "Good evening" to "You have something to do"
         }
         val open = PendingIntent.getActivity(ctx, 0, Intent(ctx, MainActivity::class.java).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP),
             PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
