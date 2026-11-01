@@ -11,8 +11,8 @@ import android.app.Notification
 import java.util.Calendar
 
 /**
- * Notifiche all'attivazione dei blocchi: ogni giorno alle 7:00 (mattina) e alle 18:00 (sera), nel weekend anche alle 10:00 (faccende).
- * Gli orari sono gli stessi della pagina (EVENING_HOUR = 18, weekend 10).
+ * Notifiche all'attivazione dei blocchi: ogni giorno alle 7:00 (mattina) e alle 18:00 (sera), il sabato anche alle 10:00 (faccende).
+ * Gli orari sono gli stessi della pagina (EVENING_HOUR = 18, sabato 10; la domenica le faccende sono alle 18).
  */
 object BlockScheduler {
     private const val CHANNEL = "blocks"
@@ -23,9 +23,8 @@ object BlockScheduler {
         for (d in 0..7) {
             val day = (now.clone() as Calendar).apply { add(Calendar.DAY_OF_YEAR, d) }
             val wd = day.get(Calendar.DAY_OF_WEEK)
-            val weekend = wd == Calendar.SATURDAY || wd == Calendar.SUNDAY
             out += at(day, 7) to "morning"
-            if (weekend) out += at(day, 10) to "weekend"
+            if (wd == Calendar.SATURDAY) out += at(day, 10) to "weekend"
             out += at(day, 18) to "evening"
         }
         return out
