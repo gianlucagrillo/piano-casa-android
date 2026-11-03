@@ -70,6 +70,7 @@ class MainActivity : Activity() {
 
     override fun onResume() {
         super.onResume()
+        BlockScheduler.scheduleNext(this)
         // Ricarica il piano quando torni nell'app, così vedi sempre l'ultima versione e le ultime spunte.
         if (::web.isInitialized && web.url != null) web.evaluateJavascript("window.onAppResume && window.onAppResume()", null)
     }

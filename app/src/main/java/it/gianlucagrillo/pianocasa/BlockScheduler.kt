@@ -40,7 +40,11 @@ object BlockScheduler {
         val i = Intent(ctx, BlockAlarmReceiver::class.java).putExtra(EXTRA_KIND, next.second)
         val pi = PendingIntent.getBroadcast(ctx, 1, i, PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE)
         val am = ctx.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-        am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, next.first, pi)
+        // Allarme esatto: quello "inesatto" su molti telefoni arriva con molto ritardo o non arriva.
+        if (android.os.Build.VERSION.SDK_INT < 31 || am.canScheduleExactAlarms())
+            am.setExactAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, next.first, pi)
+        else
+            am.setAndAllowWhileIdle(AlarmManager.RTC_WAKEUP, next.first, pi)
     }
 
     fun notify(ctx: Context, kind: String?) {
